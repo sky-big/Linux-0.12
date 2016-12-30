@@ -9,7 +9,7 @@ RAMDISK =  #-DRAMDISK=1024
 include Makefile.header
 
 LDFLAGS	+= -Ttext 0 -e startup_32
-CFLAGS	+= $(RAMDISK) 
+CFLAGS	+= $(RAMDISK)
 CPP	+= -Iinclude
 
 #
@@ -44,11 +44,11 @@ Image: boot/bootsect boot/setup tools/system
 	@tools/build.sh boot/bootsect boot/setup tools/kernel Kernel_Image $(ROOT_DEV) $(SWAP_DEV)
 	@rm system.tmp
 	@rm tools/kernel -f
-	@cp Kernel_Image ./tools/linux-0.12-080324
+	@cp Kernel_Image ../linux-0.12-080324
 	@sync
-	
+
 boot/bootsect: boot/bootsect.S
-	@make bootsect -C boot	
+	@make bootsect -C boot
 
 boot/setup: boot/setup.S
 	@make setup -C boot
@@ -73,7 +73,7 @@ tools/system:	boot/head.o init/main.o \
 
 kernel/math/math.a:
 	@make -C kernel/math
-	
+
 fs/fs.o:
 	@make -C fs
 
@@ -82,7 +82,7 @@ kernel/kernel.o:
 
 mm/mm.o:
 	@make -C mm
-	
+
 lib/lib.a:
 	@make -C lib
 
@@ -90,27 +90,27 @@ kernel/blk_drv/blk_drv.a:
 	@make -C kernel/blk_drv
 
 kernel/chr_drv/chr_drv.a:
-	@make -C kernel/chr_drv	
-	
+	@make -C kernel/chr_drv
+
 clean:
 	@rm -f Kernel_Image System.map System_s.map system.S tmp_make core boot/bootsect boot/setup
 	@rm -f init/*.o tools/system boot/*.o typescript* info bochsout.txt
-	@for i in mm fs kernel lib boot; do make clean -C $$i; done 	
-	
+	@for i in mm fs kernel lib boot; do make clean -C $$i; done
+
 debug:
 	@qemu-system-i386 -m 32M -boot a -fda Image -fdb rootimage-0.12 -hda rootimage-0.12-hd \
 	-serial pty -S -gdb tcp::1234
-	
+
 start:
 	@qemu-system-i386 -m 32M -boot a -fda Image -fdb rootimage-0.12 -hda rootimage-0.12-hd
-	
+
 dep:
 	@sed '/\#\#\# Dependencies/q' < Makefile > tmp_make
 	@(for i in init/*.c;do echo -n "init/";$(CPP) -M $$i;done) >> tmp_make
 	@cp tmp_make Makefile
 	@for i in fs kernel mm lib; do make dep -C $$i; done
 
-### Dependencies:	
+### Dependencies:
 init/main.o: init/main.c include/unistd.h include/sys/stat.h \
  include/sys/types.h include/sys/time.h include/time.h \
  include/sys/times.h include/sys/utsname.h include/sys/param.h \

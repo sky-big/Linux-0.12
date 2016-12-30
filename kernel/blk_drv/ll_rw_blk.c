@@ -212,8 +212,8 @@ repeat:
 	// req->sector是读写操作的起始扇区号,req->buffer是请求项存放数据的缓冲区.
 	req->dev = bh->b_dev;								// 设备号.
 	req->cmd = rw;										// 命令(READ/WRITE).
-	req->errors=0;										// 操作时产生的错误次数.
-	req->sector = bh->b_blocknr<<1;						// 起始扇区.块号转换成扇区号(1块=2扇区).
+	req->errors = 0;									// 操作时产生的错误次数.
+	req->sector = bh->b_blocknr << 1;					// 起始扇区.块号转换成扇区号(1块=2扇区).
 	req->nr_sectors = 2;								// 本请求项需要读写的扇区数.
 	req->buffer = bh->b_data;							// 请求项缓冲区指针指向需读写的数据缓冲区.
 	req->waiting = NULL;								// 任务等待操作执行完成的地方.
@@ -256,7 +256,7 @@ repeat:
 	// 函数仅读2个扇区数据.而这里需要对交换设备读/写8个扇区,需要花较长的时间.因此当前进程肯定需要等待而睡眠.因此这里直接就让进程去睡眠了,省得在程序其他地方
 	// 还要进行这些判断操作.
 	req->dev = dev;										// 设备号
-	req->cmd = rw;										// 命令(READ/WRITE)
+	req->cmd = rw;										// 命令(READ/WRITE)start_code
 	req->errors = 0;									// 读写操作错误计数
 	req->sector = page << 3;							// 起始读写扇区
 	req->nr_sectors = 8;								// 读写扇区数

@@ -373,7 +373,7 @@ void mount_root(void)
 		if (!set_bit(i & 8191, p->s_zmap[i >> 13]->b_data))
 			free++;
 	// 打印当前主设备上空闲和总的逻辑块数
-	printk("%d/%d free blocks\n\r", free, p->s_nzones);
+	Log(LOG_INFO_TYPE, "<<<<< %d/%d free blocks >>>>>\n\r", free, p->s_nzones);
 	// 在显示过设备上空闲逻辑块数/逻辑块总数之后.我们再统计设备上空闲i节点数.首先令i等于超级块中表明的设备上i中总数+1.加1是将0节点也统计进去.然后根据i节点位图中相应位的
 	// 占用情况计算出空闲i节点数.最后再显示设备上可用空闲i节点数和i节点总数.
 	free = 0;
@@ -382,5 +382,5 @@ void mount_root(void)
 		if (!set_bit(i & 8191, p->s_imap[i >> 13]->b_data))
 			free++;
 	// 打印当前主设备上i节点空闲和总的数量
-	printk("%d/%d free inodes\n\r", free, p->s_ninodes);
+	Log(LOG_INFO_TYPE, "<<<<< %d/%d free inodes >>>>>\n\r", free, p->s_ninodes);
 }

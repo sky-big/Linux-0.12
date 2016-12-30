@@ -310,9 +310,9 @@ void init(void)
 	// 进程1执行的用户级代码的开始
 	printf("<<<<< Process 1 console fd = %d >>>>>\n", fd);
 	// 下面打印缓冲区块数和总字节数,每块1024字节,以及主内存区空闲内存字节数.
-	printf("%d buffers = %d bytes buffer space\n\r", NR_BUFFERS,
+	printf("<<<<< %d buffers = %d bytes buffer space >>>>>\n\r", NR_BUFFERS,
 			NR_BUFFERS * BLOCK_SIZE);
-	printf("Free mem: %d bytes\n\r", memory_end - main_memory_start);
+	printf("<<<<< Free mem: %d bytes >>>>>\n\r", memory_end - main_memory_start);
 	// 下面fork()用于创建一个子进程(任务2).对于被创建的子进程,fork()将返回0值,对于原进程(父进程)则返回子进程的进程号pid.所以第202--206行是子进程执行的内容.
 	// 该子进程关闭了句柄0(stdin),以只读方式打开/etc/rc文件,并使用execve()函数将进程自身替换成/bin/sh程序(即shell程序),然后执行/bin/sh程序.所携带的参数
 	// 和环境变量分别由argv_rc和envp_rc数组给出.关闭句柄0并立刻打开/etc/rc文件的作用是把标准输入stdin重定向到/etc/rc/文件.这样shell程序/bin/sh就可以运行

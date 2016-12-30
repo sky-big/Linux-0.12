@@ -38,8 +38,8 @@
 // 这段宏读取CMOS中硬盘信息.outb_p,inb_p是include/asm/io.h中定义的端口输入输出宏.与init/main.c中读取CMOS时钟信息的宏
 // 完全一样.
 #define CMOS_READ(addr) ({ \
-outb_p(0x80|addr, 0x70); \
-inb_p(0x71); \
+	outb_p(0x80|addr, 0x70); \
+	inb_p(0x71); \
 })
 
 /* Max read/write errors/sector */
@@ -218,14 +218,19 @@ int sys_setup(void * BIOS)
 		brelse(bh);																// 释放为存放硬盘数据块而申请的缓冲区.
     }
 	// 现在再对每个分区中的数据块总数进行统计,并保存在硬盘分区总数据数组hd_sizes[]中.然后让设备数据块总数指针数组的本设备项指向该数组.
-	for (i = 0 ; i < 5 * MAX_HD ; i++)
+	for (i = 0 ; i < 5 * MAX_HD ; i++) {
+		if (hd[i].nr_sects != 0)
+			Log(LOG_INFO_TYPE, "<<<<< HD Partition%d Info : start_sect = %d, nr_sects = %d >>>>>\n", i, hd[i].start_sect, hd[i].nr_sects);
 		hd_sizes[i] = hd[i].nr_sects >> 1 ;
+	}
 	blk_size[MAJOR_NR] = hd_sizes;
 	// 现在总算完成设置硬盘分区结构数组hd[]的任务.如果确实有硬盘存在并且读入其分区表,则显示"分区表正常"信息.然后尝试在系统内存虚拟盘中加载启动盘中包含的
 	// 根文件系统映像(blk_drv/ramdisk.c).即在系统设置有虚拟盘的情况下判断启动盘上是否还含有根文件系统的映像数据.如果有(此时该启动盘称为集成盘)则尝试
 	// 把该映像加载并存放到虚拟盘中,然后把此时的根文件系统设备号ROOT_DEV修改成虚拟盘的设备号.接着再对交换设备进行初始化.最后安装根文件系统.
 	if (NR_HD)
-		printk("Partition table%s ok.\n\r",(NR_HD > 1) ? "s":"");
+		Log(LOG_INFO_TYPE, "<<<<< Partition table%s ok. >>>>>\n\r",(NR_HD > 1) ? "s":"");
+	for (i = 0; i < NR_HD; i++)
+		Log(LOG_INFO_TYPE, "<<<<< HD%d Info: cyl = %d, head = %d, sect = %d, ctl = %x >>>>>\n", hd_info[i].cyl, hd_info[i].head, hd_info[i].sect, hd_info[i].ctl);
 	rd_load();																	// blk_drv/ramdisk.c
 	init_swapping();															// mm/swap.c
 	mount_root();																// fs/super.c

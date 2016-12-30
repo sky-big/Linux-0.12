@@ -582,6 +582,7 @@ repeat:
 				current->cutime += p->utime;
 				current->cstime += p->stime;
 				flag = p->pid;
+				// Log(LOG_INFO_TYPE, "current_pid = %d, child_pid = %d, exit_code = %d\n", current->pid, p->pid, p->exit_code);
 				put_fs_long(p->exit_code, stat_addr);
 				release(p);
 #ifdef DEBUG_PROC_TREE
@@ -593,7 +594,7 @@ repeat:
 				flag = 1;
 				continue;
 		}
-        }
+    }
 	// 在上面对任务数组扫描结束后，如果flag被置位，说明了有符合等待要求的子进程并没有处于退出立刻或僵死状态。此时如果已设置
 	// WNOHANG选项（表示若没有子进程处于退出或终止态就返回），就立刻返回0,退出。否则把当前进程置为可中断等待状态，保留并修改当前
 	// 进程信号阻塞位图，允许其接收SIGCHLD信号。然后执行调度程序。当系统又开始执行本进程时，如果本进程收到除SIGCHLD以外的
@@ -601,7 +602,7 @@ repeat:
 	if (flag) {
 		if (options & WNOHANG)
 			return 0;
-		current->state=TASK_INTERRUPTIBLE;
+		current->state = TASK_INTERRUPTIBLE;
 		oldblocked = current->blocked;
 		current->blocked &= ~(1 << (SIGCHLD - 1));
 		schedule();

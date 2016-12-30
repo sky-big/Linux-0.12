@@ -13,7 +13,7 @@
 // 封面人物,并对他行了采访.目前他为IMBLinux技术中心工作,并从事着有关LSB(Linux Standard Base)等方面的工作.(他的个人主面是:http://
 // thunk.org/tytso/)
 
-#include <string.h>							// 字符串头文件.主要定义了一些有关字符串操作的嵌入函数.
+#include <string.h>								// 字符串头文件.主要定义了一些有关字符串操作的嵌入函数.
 
 // #include <linux/config.h>					// 内核配置头文件.定义键盘语言和硬盘类型(HD_TYPE)可选项.
 // #include <linux/sched.h>						// 调试程序头文件,定义了任务结构task_struct,任务0的数据,还有一些有关描述符参数设置和获取的嵌入式
@@ -122,7 +122,7 @@ void rd_load(void)
 	// 设备,则也退出.
 	if (!rd_length)
 		return;
-	printk("Ram disk: %d bytes, starting at 0x%x\n", rd_length, (int) rd_start);
+	printk("Ram disk: %d bytes, starting at 0x%x, dev = 0x%x \n", rd_length, (int) rd_start, ROOT_DEV);
 	if (MAJOR(ROOT_DEV) != 2)
 		return;
 	// 然后读根文件系统的基本参数.即读软盘块256+1,256和256+2.这里block+1是指磁盘上的超级块.breada()用于读取指定的数据块,并标出还需要读的块,

@@ -201,6 +201,7 @@ int copy_process(int nr, long ebp, long edi, long esi, long gs, long none,
 		p->p_osptr->p_ysptr = p;
 	current->p_cptr = p;				// 让当前进程最新子进程指针指向新进程.
 	p->state = TASK_RUNNING;			/* do this last, just in case */        /* 设置进程状态为待运行状态栏 */
+	Log(LOG_INFO_TYPE, "<<<<< fork new process current_pid = %d, child_pid = %d, nr = %d >>>>>\n", current->pid, p->pid, nr);
 	return last_pid;        			// 返回新进程号
 }
 

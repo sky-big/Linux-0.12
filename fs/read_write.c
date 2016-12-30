@@ -125,7 +125,7 @@ int sys_write(unsigned int fd, char * buf, int count)
 	// 则返回出错码并退出.如果需读取的字节数count等于0,则返回0退出.
 	if (fd >= NR_OPEN || count < 0 || !(file = current->filp[fd]))
 		return -EINVAL;
-	Log(LOG_INFO_TYPE, "<<<<< sys_write : fd = %d>>>>>\n", fd);
+	// Log(LOG_INFO_TYPE, "<<<<< sys_write : fd = %d>>>>>\n", fd);
 	if (!count)
 		return 0;
 	// 然后验证存放数据的缓冲区内存限制.并取文件的i节点.根据该i节点的属性,分别调用相应的写操作函数.若是管道文件,并且是写管道文件模式,则进行写管道操作,若成功则

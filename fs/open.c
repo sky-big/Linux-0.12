@@ -222,7 +222,7 @@ static int check_char_dev(struct m_inode * inode, int dev, int flag)
 		if ((IS_A_PTY_MASTER(min)) && (inode->i_count > 1))
 			return -1;
 		tty = TTY_TABLE(min);
-		Log(LOG_INFO_TYPE, "<<<<< tty index = %d>>>>>\n", min);
+		// Log(LOG_INFO_TYPE, "<<<<< tty index = %d>>>>>\n", min);
 		if (!(flag & O_NOCTTY) &&
 		    current->leader &&
 		    current->tty < 0 &&
