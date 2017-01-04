@@ -12471,7 +12471,7 @@ return __res; \
 }
 
 // 这里根据不同的op字符定义3个内嵌函数.
-bitop(bit, "")		// 定义内嵌函数bit(char * addr, unsigned int nr).
+bitop(bit, "")								// 定义内嵌函数bit(char * addr, unsigned int nr).
     cc1c:	83 ec 10             	sub    $0x10,%esp
     cc1f:	8b 54 24 18          	mov    0x18(%esp),%edx
     cc23:	8b 4c 24 14          	mov    0x14(%esp),%ecx
@@ -12485,7 +12485,7 @@ bitop(bit, "")		// 定义内嵌函数bit(char * addr, unsigned int nr).
     cc42:	c3                   	ret    
 
 0000cc43 <setbit>:
-bitop(setbit, "s")	// 定义内嵌函数setbit(char * addr, unsigned int nr).
+bitop(setbit, "s")							// 定义内嵌函数setbit(char * addr, unsigned int nr).
     cc43:	83 ec 10             	sub    $0x10,%esp
     cc46:	8b 54 24 18          	mov    0x18(%esp),%edx
     cc4a:	8b 4c 24 14          	mov    0x14(%esp),%ecx
@@ -12499,7 +12499,7 @@ bitop(setbit, "s")	// 定义内嵌函数setbit(char * addr, unsigned int nr).
     cc69:	c3                   	ret    
 
 0000cc6a <clrbit>:
-bitop(clrbit, "r")	// 定义内嵌函数clrbit(char * addr, unsigned int nr).
+bitop(clrbit, "r")							// 定义内嵌函数clrbit(char * addr, unsigned int nr).
     cc6a:	83 ec 10             	sub    $0x10,%esp
     cc6d:	8b 54 24 18          	mov    0x18(%esp),%edx
     cc71:	8b 4c 24 14          	mov    0x14(%esp),%ecx
@@ -12513,7 +12513,7 @@ bitop(clrbit, "r")	// 定义内嵌函数clrbit(char * addr, unsigned int nr).
     cc90:	c3                   	ret    
 
 0000cc91 <get_swap_page>:
-#define VM_PAGES (LAST_VM_PAGE - FIRST_VM_PAGE)					// = 1032192(从0开始计)
+#define VM_PAGES (LAST_VM_PAGE - FIRST_VM_PAGE)					// = 1032192(从0开始计)(用总的页面数减去第0个任务的页面数)
 
 // 申请1页交换页面.
 // 扫描整个交换映射位图(除对应位图本身的位0以外),返回值为1的第一个比特位号,即目前空闲的交换页面号.若操作成功则返回交换页面号,否则返回0.
@@ -12834,7 +12834,7 @@ int swap_out(void)
     ceff:	83 ec 1c             	sub    $0x1c,%esp
 	static int dir_entry = FIRST_VM_PAGE >> 10;	// 即任务1的第1个目录项索引.
 	static int page_entry = -1;
-	int counter = VM_PAGES;
+	int counter = VM_PAGES;						// 表示除去任务0以外的其他任务的所有页数目
     cf02:	c7 44 24 0c 00 c0 0f 	movl   $0xfc000,0xc(%esp)
     cf09:	00 
 	int pg_table;
@@ -12860,6 +12860,7 @@ int swap_out(void)
     cf2f:	a1 50 e3 02 00       	mov    0x2e350,%eax
     cf34:	83 c0 01             	add    $0x1,%eax
     cf37:	a3 50 e3 02 00       	mov    %eax,0x2e350
+		// 如果整个4GB的1024个页目录项检查完了则又回到第1个任务重新开始检查
 		if (dir_entry >= 1024)
     cf3c:	a1 50 e3 02 00       	mov    0x2e350,%eax
     cf41:	3d ff 03 00 00       	cmp    $0x3ff,%eax
@@ -12867,7 +12868,7 @@ int swap_out(void)
 			dir_entry = FIRST_VM_PAGE >> 10;
     cf48:	c7 05 50 e3 02 00 10 	movl   $0x10,0x2e350
     cf4f:	00 00 00 
-	int counter = VM_PAGES;
+	int counter = VM_PAGES;						// 表示除去任务0以外的其他任务的所有页数目
 	int pg_table;
 
 	// 首先搜索页目录表,查找二级页表存在的页目录项pg_table.找到则退出循环,否则高速页目录项数对应剩余二级页表项数counter,然后继续

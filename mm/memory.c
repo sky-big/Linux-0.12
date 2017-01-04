@@ -63,13 +63,13 @@ unsigned long HIGH_MEMORY = 0;					// 全局变量,存放实际物理内存最�
 
 // 从from处复制一页内存到to处(4KB)
 #define copy_page(from, to) \
-__asm__("pushl %%edi; pushl %%esi; cld ; rep ; movsl; popl %%esi; popl %%edi"::"S" (from),"D" (to),"c" (1024):)
+__asm__("pushl %%edi; pushl %%esi; cld ; rep ; movsl; popl %%esi; popl %%edi"::"S" (from), "D" (to), "c" (1024):)
 //#define copy_page(from,to) \
 		__asm__("cld ; rep ; movsl"::"S" (from),"D" (to),"c" (1024):)
 
 // 内存映射字节图(1字节代表1页内存).每个页面对应的字节用于标志页面当前被引用(占用)次数.它最大可以映射15MB的内存空间.在初始化函数
 // mem_init()中,对于不能用作主内存区页面的位置均都参选被设置成USED(100).
-unsigned char mem_map [ PAGING_PAGES ] = {0,};
+unsigned char mem_map [ PAGING_PAGES ] = {0, };
 
 /*
  * Free a page of memory at physical address 'addr'. Used by
@@ -627,7 +627,7 @@ void do_no_page(unsigned long error_code, unsigned long address)
 	int nr[4];
 	unsigned long tmp;
 	unsigned long page;
-	int block,i;
+	int block, i;
 	struct m_inode * inode;
 
 	// 首先判断CPU控制寄存器CR2给出的引起页面异常的线性地址在什么范围中.如果address小于TASK_SIZE(0x4000000,即64MB),表示异常页面位置在内核

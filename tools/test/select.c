@@ -6,14 +6,14 @@ int select(int nd, fd_set * in, fd_set *out, fd_set *ex, struct timeval *tv)
 {
 	long __res;
 	register long __fooebx __asm__("bx") ;
-	__fooebx=(long) &nd;	
-	
+	__fooebx=(long) &nd;
+
 	__asm__ volatile ("int $0x80"
 		: "=a" (__res)
 		: "0" (__NR_select),"r" (__fooebx));
 	if(__res>=0)
 		return (int) __res;
-	errno = -__res;	
+	errno = -__res;
 	return -1;
 }
 

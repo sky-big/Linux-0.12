@@ -43,9 +43,9 @@ return __res; \
 }
 
 // 这里根据不同的op字符定义3个内嵌函数.
-bitop(bit, "")		// 定义内嵌函数bit(char * addr, unsigned int nr).
-bitop(setbit, "s")	// 定义内嵌函数setbit(char * addr, unsigned int nr).
-bitop(clrbit, "r")	// 定义内嵌函数clrbit(char * addr, unsigned int nr).
+bitop(bit, "")								// 定义内嵌函数bit(char * addr, unsigned int nr).
+bitop(setbit, "s")							// 定义内嵌函数setbit(char * addr, unsigned int nr).
+bitop(clrbit, "r")							// 定义内嵌函数clrbit(char * addr, unsigned int nr).
 
 static char * swap_bitmap = NULL;
 int SWAP_DEV = 0;		// 内核初始化时设置的交换设备号.
@@ -60,7 +60,7 @@ int SWAP_DEV = 0;		// 内核初始化时设置的交换设备号.
 // 第1个虚拟内存页面,即从任务0末端(64MB)处开始的虚拟内存页面.
 #define FIRST_VM_PAGE (TASK_SIZE >> 12)							// = 64MB/4KB = 16384
 #define LAST_VM_PAGE (1024 * 1024)								// = 4GB/4KB = 1048576 4G对应的页数
-#define VM_PAGES (LAST_VM_PAGE - FIRST_VM_PAGE)					// = 1032192(从0开始计)
+#define VM_PAGES (LAST_VM_PAGE - FIRST_VM_PAGE)					// = 1032192(从0开始计)(用总的页面数减去第0个任务的页面数)
 
 // 申请1页交换页面.
 // 扫描整个交换映射位图(除对应位图本身的位0以外),返回值为1的第一个比特位号,即目前空闲的交换页面号.若操作成功则返回交换页面号,否则返回0.
@@ -176,7 +176,7 @@ int swap_out(void)
 {
 	static int dir_entry = FIRST_VM_PAGE >> 10;	// 即任务1的第1个目录项索引.
 	static int page_entry = -1;
-	int counter = VM_PAGES;
+	int counter = VM_PAGES;						// 表示除去任务0以外的其他任务的所有页数目
 	int pg_table;
 
 	// 首先搜索页目录表,查找二级页表存在的页目录项pg_table.找到则退出循环,否则高速页目录项数对应剩余二级页表项数counter,然后继续
@@ -187,6 +187,7 @@ int swap_out(void)
 			break;
 		counter -= 1024;						// 1个页表对应1024个页帧
 		dir_entry++;							// 下一目录项.
+		// 如果整个4GB的1024个页目录项检查完了则又回到第1个任务重新开始检查
 		if (dir_entry >= 1024)
 			dir_entry = FIRST_VM_PAGE >> 10;
 	}

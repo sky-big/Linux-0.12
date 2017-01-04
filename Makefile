@@ -35,7 +35,7 @@ LIBS	=lib/lib.a
 	-nostdinc -Iinclude -c -o $*.o $<
 
 
-all:	clean Image
+all: Image
 
 Image: boot/bootsect boot/setup tools/system
 	@cp -f tools/system system.tmp
