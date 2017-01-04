@@ -141,6 +141,7 @@ static inline void init_bucket_desc()
 {
 	struct bucket_desc *bdesc, *first;
 	int	i;
+	int j;
 
 	// 申请一页内存，用于存放桶描述符。如果失败，则显示初始化桶描述符时内存不够出错信息，死机。
 	first = bdesc = (struct bucket_desc *) get_free_page();
