@@ -131,8 +131,9 @@ system_call:
     call sys_default
 	# 下面这句操作数的含义是:调用地址=[sys_call_table + %eax *4].
 	# sys_call_table[]是一个指针数组,定义在include/linux/sys.h中,该数组中设置了内核所有82个系统调用C处理函数的地址.
-sys_call:   call *%ebx
-	#	call *sys_call_table(,%eax,4)	# 间接调用指定功能C函数.
+sys_call:
+	call *%ebx
+	# call *sys_call_table(, %eax, 4)	# 间接调用指定功能C函数.
 	pushl %eax							# 把系统调用返回值入栈.
 
 # 下面行查看当前任务的运行状态.如果不在就绪状态(state不等于0)就去执行调试程序.如果该任务在就绪状态,但是其时间片已经用

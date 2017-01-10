@@ -381,6 +381,7 @@ void do_exit(long code)
 	for (i = 0 ; i < NR_OPEN ; i++)
 		if (current->filp[i])
 			sys_close(i);
+	Log(LOG_INFO_TYPE, "<<<<< sys_exit process pid = %d, exit_code = %d >>>>>\n", current->pid, code);
 	iput(current->pwd);
 	current->pwd = NULL;
 	iput(current->root);
@@ -582,7 +583,7 @@ repeat:
 				current->cutime += p->utime;
 				current->cstime += p->stime;
 				flag = p->pid;
-				// Log(LOG_INFO_TYPE, "current_pid = %d, child_pid = %d, exit_code = %d\n", current->pid, p->pid, p->exit_code);
+				Log(LOG_INFO_TYPE, "<<<<< sys_waitpid current_pid = %d, child_pid = %d, exit_code = %d >>>>>\n", current->pid, p->pid, p->exit_code);
 				put_fs_long(p->exit_code, stat_addr);
 				release(p);
 #ifdef DEBUG_PROC_TREE

@@ -318,6 +318,21 @@ int do_execve(unsigned long * eip, long tmp, char * filename,
 	int sh_bang = 0;											// 控制是否需要执行脚本程序.
 	unsigned long p = PAGE_SIZE * MAX_ARG_PAGES - 4;			// p指向参数和环境空间的最后部.
 
+	// 在内核中打印要执行的文件的文件名字
+	char s, filename1[128];
+	int index = 0;
+	while (1) {
+		s = get_fs_byte(filename + index);
+		if (s) {
+			*(filename1 + index) = s;
+			index++;
+		} else {
+			break;
+		}
+	}
+	*(filename1 + index + 1) = '\0';
+	Log(LOG_INFO_TYPE, "<<<<< process pid = %d do_execve : %s >>>>>\n", current->pid, filename1);
+
 	// 在正式设置执行文件的运行环境之前,让我们先干些杂事.内核准备了128KB(32个页面)空间来存放正执行文件的命令行参数和环境字符串.
 	// 上行把p初始设置成位于128KB空间的最后1个长字处.在初始参数和环境空间的操作过程中,p将用来指明在128KB空间中的当前位置.
 	// 另外,参数eip[1]是调用本次系统调用的原用户程序代码段寄存器CS值,其中的段选择符当然必须是当前任务的代码段选择符(0x000f).
